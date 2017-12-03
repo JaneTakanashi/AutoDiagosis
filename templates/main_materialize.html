@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+  <html>
+
+    <head>
+      <!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <!-- 2333 -->
+      <link type="text/css" rel="stylesheet" href="static/css/materialize.min.css"  media="screen,projection"/>
+      <link type="text/css" rel="stylesheet" href="static/css/cropper.css"  media="screen,projection"/>
+
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <style media="screen">
+      *{
+        font-family: song;
+      }
+      .container{
+        width: 80%;
+      }
+      .btn-floating .btn-large .waves-effect .waves-light{
+        color: green;
+      }
+      .upload_btn_style{
+        text-align: center;
+        margin: 1em;
+      }
+      .radiography_imgs{
+        width: 100%;
+      }
+      .col div{
+        text-align: center;
+      }
+      .preview_box{
+        margin: 0;
+        padding:0;
+
+      }
+      .preview{
+        width:100%;
+        float: left
+      }
+      .conclusion{
+        text-align:center;
+        border-style: dashed;
+        width: 100%;
+        /*padding: 10px;*/
+        /*margin:10px;*/
+        box-sizing: border-box;
+        opacity: 0;
+      }
+      .page-footer{
+        margin-bottom: 0;
+        float:bottom;
+      }
+      .preview_box img {
+        width: 200px;
+      }
+      #image {
+        max-width: 100%; /* This rule is very important, please do not ignore this! */
+      }
+      body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
+      </style>
+    </head>
+
+    <body>
+      <main>
+        <h1 style = "text-align:center;">牙根尖周片识别诊断平台</h1>
+        <hr />
+        <br />
+        <br />
+
+        <div class="container">
+          <div class="row" style="text-align:center">
+            <form id = 'form' enctype="multipart/form-data" >
+            <div class="col s4">
+              <div class="file-field input-field">
+                <a class="waves-effect waves-light btn upload_btn_style" style="float: none;">
+                  <i class="material-icons left">cloud_upload</i>
+                  <span>上传治疗前图片</span>
+                  <input id="pre" class="upload" type="file"/>
+                  </a>
+              </div>
+              <div>
+                <div id="pre_box" class="preview_box"></div>
+              </div>
+            </div>
+
+            <div class="col s4">
+              <div class="file-field input-field">
+                <a class="waves-effect waves-light btn upload_btn_style" style="float: none;">
+                  <i class="material-icons left">cloud_upload</i>
+                  <span>上传治疗后图片</span>
+                  <input id="post" class="upload" type="file"/>
+                </a>
+                <div id="post_box" class="preview_box" style="position: relative;">
+                </div>
+              </div>
+            </div>
+
+            <div class="col s4">
+              <a id="submit_btn" class="waves-effect waves-light btn upload_btn_style" style="height: 40px;">
+                <i class="material-icons center">build</i>
+                裁剪并开始诊断
+
+              </a>
+              <div id="conclusion" class = "conclusion" >
+                <h3 id="conclusion_title"></h3>
+                <span id = "ret">
+                <p></p>
+                </span>
+              </div>
+            </div>
+          </form>
+          </div>
+        </div>
+      </main>
+
+      <footer class="page-footer teal lighten" >
+        <div class="container center" >
+            © 2017 Copyright 牙根尖周片识别诊断平台
+        </div>
+      </footer>
+      <!--Import jQuery before materialize.js-->
+      <script type="text/javascript" src="static/js/jquery-3.2.1.min.js"></script>
+      <script type="text/javascript" src="static/js/materialize.min.js"></script>
+      <script type="text/javascript" src="static/js/cropper.js"></script>
+      <script>
+      //上传并预览图片
+        var pre_img_x;
+        var pre_img_y;
+        var pre_img_width;
+        var pre_img_height;
+
+        var post_img_x;
+        var post_img_y;
+        var post_img_width;
+        var post_img_height;
+
+        $(".upload").on("change", function(e){
+          btn_id = this.id;
+          var file = e.target.files[0]; //获取图片资源
+          if (!/\/(?:jpeg|jpg|png)/i.test(file.type)) return;
+          var reader = new FileReader();
+          reader.readAsDataURL(file); // 读取文件
+          // 渲染文件
+          reader.onload = function(arg) {
+            img_id = btn_id+"_image";
+            console.log('id'+img_id);
+            var img = '<div><img id='+img_id+' class="preview" src="' + arg.target.result + '" alt="preview"/></div>';
+            box_id = btn_id+"_box";
+            console.log(box_id);
+
+            $("#"+box_id).empty().append(img);
+            window.$img = $($(img).children()[0]);
+
+            $img.ready(function(e) {
+              console.log(e);
+              var w = $img[0].width;
+              var h = $img[0].height;
+              console.log(w,h);
+
+              var image = document.getElementById(btn_id+'_image');
+              var cropper = new Cropper(image, {
+                aspectRatio: 1 / 2,
+                minContainerHeight: h,
+                minContainerWidth: w,
+                crop: function(e) {
+                  console.log(e.detail.x);
+                  console.log(e.detail.y);
+                  console.log(e.detail.width);
+                  console.log(e.detail.height);
+                  console.log(e.detail.rotate);
+                  console.log(e.detail.scaleX);
+                  console.log(e.detail.scaleY);
+
+                  if(btn_id == "pre"){
+                    pre_img_x = e.detail.x;
+                    pre_img_y = e.detail.y;
+                    pre_img_width=e.detail.width;
+                    pre_img_height=e.detail.height;
+                  }else{
+                    post_img_x = e.detail.x;
+                    post_img_y = e.detail.y;
+                    post_img_width=e.detail.width;
+                    post_img_height=e.detail.height;
+                  }
+                }
+              });
+            });
+          }
+      });
+
+      $("#submit_btn").on("click", function(e){
+        $('#conclusion').css("opacity","1");
+        $('#conclusion_title').text('计算中...');
+        $('#ret').empty();
+        console.log("submit")
+        var formData = new FormData();
+        formData.append('pre', $("#pre")[0].files[0]);
+        formData.append('post', $("#post")[0].files[0]);
+
+        formData.append('pre_img_x',pre_img_x);
+        formData.append('pre_img_y',pre_img_y);
+        formData.append('pre_img_width',pre_img_width);
+        formData.append('pre_img_height',pre_img_height);
+
+        formData.append('post_img_x',post_img_x);
+        formData.append('post_img_y',post_img_y);
+        formData.append('post_img_width',post_img_width);
+        formData.append('post_img_height',post_img_height);
+
+        $.ajax({
+            url: '/submit',
+            type: 'POST',
+            cache: false,
+            enctype: 'multipart/form-data',
+            dataType: 'json',
+            data: formData,
+            processData: false,
+            contentType: false,
+            complete: function(ret) {
+              console.log('complete', ret.responseText);
+              $('#conclusion_title').text('诊断结论')
+              $('#conclusion').css("opacity","1");
+              $('#ret').empty().append(ret.responseText);
+            },
+            success: function(ret){
+              console.log(233);
+              console.log(ret);
+            },
+            fail: function(ret) {
+              console.log(2333);
+              console.log(ret);
+            }
+        });
+
+      });
+    </script>
+  </body>
+</html>

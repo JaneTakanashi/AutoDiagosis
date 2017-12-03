@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="description" content="...">
+    <style media="screen">
+      body {
+        margin: 0;
+      }
+      footer{
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 5px;
+        float: bottom;
+        margin-top: 2rem;
+      }
+      .upload_pics{
+        /*position: relative;*/
+        /*margin: 20px;*/
+        /*padding: 20px;*/
+        width: 50%;
+        /*border: 10px;*/
+        /*display: inline-block;*/
+        float: left;
+      }
+      .upload_pics div {
+        width: 100%;
+        text-align: center;
+      }
+      .radiography_imgs{
+        width: 100%;
+      }
+      .conclusion{
+        text-align:center;
+        border-style: dashed;
+        width: 100%;
+        padding: 10px;
+        /*margin:10px;*/
+        box-sizing: border-box;
+      }
+      #main-container {
+        text-align: right;
+        margin: 0 20%;
+      }
+    </style>
+    <title> 牙根尖周片识别诊断平台</title>
+  </head>
+
+  <body>
+    <h1 style="text-align:center">牙根尖周片识别诊断平台</h1>
+    <hr />
+    <div id="main-container">
+      <div class = "upload_pics">
+        <div><img class="radiography_imgs" src = "./imgs/better-51.jpg"/></div>
+        <div>
+          术前
+        </div>
+      </div>
+
+      <div class = "upload_pics">
+        <div class="">
+          <img class = "radiography_imgs" src = "./imgs/better-51-1.jpg"/>
+        </div>
+        <div class="">
+          术后
+        </div>
+      </div>
+
+      <div style="clear:both;"></div>
+
+      <button type="button" name="button">重置</button>
+      <button type="button" name="button">导出为pdf</button>
+
+      <div class="conclusion">
+        <h2>诊断结论</h2>
+        <p>本次治疗诊断为：，确信度为 。</p>
+      </div>
+    </div>
+
+    <footer>牙根尖周片识别诊断平台</footer>
+  </body>
+
+
+</html>
